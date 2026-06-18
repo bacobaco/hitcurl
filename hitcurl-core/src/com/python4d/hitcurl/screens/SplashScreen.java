@@ -230,6 +230,7 @@ public class SplashScreen extends AbstractScreen {
 		stage.draw();
 		screen.act(deltaTime);
 		screen.draw();
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		logo3d.render(deltaTime);
 
 	}

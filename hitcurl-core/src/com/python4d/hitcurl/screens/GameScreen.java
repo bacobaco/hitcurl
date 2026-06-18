@@ -45,6 +45,7 @@ public class GameScreen extends AbstractScreen {
 		// Clears the screen
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		// 3D render
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		logo3d.render(deltaTime);
 		// Render game world to screen
 		worldRenderer.render(paused);

@@ -63,7 +63,9 @@ public class AndroidLauncher extends AndroidApplication implements IActivityRequ
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
 		// Create the libgdx View
-		View gameView = initializeForView(new HitcurL((IGoogleServices) this, getString(R.string.app_version)));
+		com.badlogic.gdx.backends.android.AndroidApplicationConfiguration config = new com.badlogic.gdx.backends.android.AndroidApplicationConfiguration();
+		config.useImmersiveMode = true;
+		View gameView = initializeForView(new HitcurL((IGoogleServices) this, getString(R.string.app_version)), config);
 
 		// Create and setup the AdMob view
 		adView = new AdView(this);
