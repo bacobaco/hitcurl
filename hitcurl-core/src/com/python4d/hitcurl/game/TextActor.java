@@ -3,6 +3,7 @@ package com.python4d.hitcurl.game;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class TextActor extends Actor {
@@ -18,67 +19,54 @@ public class TextActor extends Actor {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		font.setColor(getColor().r, getColor().g, getColor().b, getColor().a);
-		font.drawMultiLine(batch, str, this.getX(),
-				this.getY() + this.getHeight());
+		font.draw(batch, str, this.getX(), this.getY() + this.getHeight());
 	}
 
 	@Override
 	public void setScale(float scale) {
-		// on ne veut pas que le stage diminue la taille de notre textactor déjà
-		// défini par setBounds
 		super.setScale(1);
-		font.setScale(scale);
-		this.setBounds(getX(), getY(), font.getBounds(str).width,
-				font.getBounds(str).height);
+		font.getData().setScale(scale);
+		GlyphLayout layout = new GlyphLayout(font, str);
+		this.setBounds(getX(), getY(), layout.width, layout.height);
 	}
 
 	@Override
 	public void setScale(float scalex, float scaley) {
-		// on ne veut pas que le stage diminue la taille de notre textactor déjà
-		// défini par setBounds
 		super.setScale(1);
-		font.setScale(scalex, scaley);
-		this.setBounds(getX(), getY(), font.getBounds(str).width,
-				font.getBounds(str).height);
+		font.getData().setScale(scalex, scaley);
+		GlyphLayout layout = new GlyphLayout(font, str);
+		this.setBounds(getX(), getY(), layout.width, layout.height);
 	}
 
-	/**
-	 * OVERRIDE pour l'utilisation de ScaleBy de la classe Actions On va gonfler
-	 * la font en utilisant le centre du text Attention! on n'utilise pas
-	 * l'origine de l'acteur !
-	 */
 	@Override
 	public void scaleBy(float scaleX, float scaleY) {
 		super.scaleBy(scaleX, scaleY);
-		float w = font.getBounds(str).width;
-		float h = font.getBounds(str).height;
-		font.scale(scaleX);
-		float W = font.getBounds(str).width;
-		float H = font.getBounds(str).height;
+		GlyphLayout oldLayout = new GlyphLayout(font, str);
+		float w = oldLayout.width;
+		float h = oldLayout.height;
+		font.getData().scale(scaleX);
+		GlyphLayout newLayout = new GlyphLayout(font, str);
+		float W = newLayout.width;
+		float H = newLayout.height;
 		this.setBounds(getX() - (W - w) / 2f, getY() - (H - h) / 2f, W, H);
 	}
 
 	protected void setText(String string) {
 		this.str = string;
-		this.setBounds(getX(), getY(), font.getBounds(str).width,
-				font.getBounds(str).height);
+		GlyphLayout layout = new GlyphLayout(font, str);
+		this.setBounds(getX(), getY(), layout.width, layout.height);
 	}
 
-	/**
-	 * Getter
-	 * 
-	 * @return
-	 */
 	public BitmapFont getFont() {
 		return font;
 	}
 
 	public int getStrWidth() {
-		return (int) font.getBounds(str).width;
+		return (int) new GlyphLayout(font, str).width;
 	}
 
 	public float getStrHeight() {
-		return (int) font.getBounds(str).height;
+		return new GlyphLayout(font, str).height;
 	}
 
 }

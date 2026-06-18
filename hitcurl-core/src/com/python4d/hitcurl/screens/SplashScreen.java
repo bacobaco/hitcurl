@@ -81,7 +81,7 @@ public class SplashScreen extends AbstractScreen {
 			};
 		});
 		buttonClassementEasy = new TextButton("HighScore", skin, "HighScore");
-		buttonClassementEasy.getStyle().font.setScale(0.5f);
+		buttonClassementEasy.getStyle().font.getData().setScale(0.5f);
 		buttonClassementEasy.addAction(sequence(fadeOut(0), fadeIn(3)));
 		buttonClassementEasy.addListener(new ClickListener() {
 			@Override
@@ -249,7 +249,7 @@ public class SplashScreen extends AbstractScreen {
 		stage = new Stage();
 		screen = new Stage();
 		Gdx.input.setInputProcessor(stage);
-		Gdx.input.setCatchBackKey(true);
+		Gdx.input.setCatchKey(com.badlogic.gdx.Input.Keys.BACK, true);
 		FirstWidth = Gdx.graphics.getWidth();
 		rebuildStage();
 	}

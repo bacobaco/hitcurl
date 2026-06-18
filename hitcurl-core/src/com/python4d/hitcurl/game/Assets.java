@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Disposable;
@@ -128,10 +129,8 @@ public class Assets implements Disposable, AssetErrorListener {
 			}
 
 			public Vector2 StrSize(String str) {
-				Vector2 size;
-				size = new Vector2(font.getBounds(str).width,
-						font.getBounds(str).height);
-				return size;
+				GlyphLayout layout = new GlyphLayout(font, str);
+				return new Vector2(layout.width, layout.height);
 			}
 		}
 
@@ -147,9 +146,9 @@ public class Assets implements Disposable, AssetErrorListener {
 			sketchfont = new BitmapFont(
 					Gdx.files.internal("images/sketchblock.fnt"), false);
 			// set font sizes
-			goodgirlSmall.setScale(0.75f);
-			goodgirlNormal.setScale(1.0f);
-			goodgirlBig.setScale(2.0f);
+			goodgirlSmall.getData().setScale(0.75f);
+			goodgirlNormal.getData().setScale(1.0f);
+			goodgirlBig.getData().setScale(2.0f);
 			// enable linear texture filtering for smooth fonts
 			goodgirlSmall.getRegion().getTexture()
 					.setFilter(TextureFilter.Linear, TextureFilter.Linear);

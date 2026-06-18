@@ -2,6 +2,7 @@ package com.python4d.hitcurl.game;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
@@ -14,15 +15,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
  *         >stackoverflow<a/>}
  */
 public class AnimatedActor extends Image {
-	public final Animation anim;
+	public final Animation<TextureRegion> anim;
 	private float stateTime = 0;
 
-	public AnimatedActor(Animation anim) {
+	public AnimatedActor(Animation<TextureRegion> anim) {
 		super(anim.getKeyFrame(0));
 		this.anim = anim;
 	}
 
-	public Animation getAnim() {
+	public Animation<TextureRegion> getAnim() {
 		return anim;
 	}
 

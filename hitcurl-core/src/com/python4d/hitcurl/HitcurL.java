@@ -34,7 +34,7 @@ public class HitcurL extends Game {
 		// Load assets
 		Assets.instance.init(new AssetManager());
 		fpsLogger = new FPSLogger();
-		Gdx.input.setCatchBackKey(true);
+		Gdx.input.setCatchKey(com.badlogic.gdx.Input.Keys.BACK, true);
 		setScreen(new SplashScreen(this));
 	}
 

@@ -161,21 +161,14 @@ public class Toast {
 
 		// we load the desired font
 		font[i] = myfont;
-		font[i].setScale(1.0f);// permet de recalculer la taille de base de la
-								// font
-		font[i].setScale(Gdx.graphics.getWidth() / font[i].getBounds(string).width / 1.1f);
-		font_width[i] = (int) (font[i].getBounds(string).width + margin); // width
-																			// of
-																			// the
-																			// string
-																			// +
-																			// margin
-		font_height[i] = (int) font[i].getLineHeight() + margin; // height of
-																	// the
-																	// string
-		float x_bounds = font[i].getBounds(string).width / 2; // we center the
-																// string
-		float y_bounds = font[i].getLineHeight() + ((font[i].getLineHeight() + margin) * (-i)); // we
+		font[i].getData().setScale(1.0f);
+		com.badlogic.gdx.graphics.g2d.GlyphLayout initialLayout = new com.badlogic.gdx.graphics.g2d.GlyphLayout(font[i], string);
+		font[i].getData().setScale(Gdx.graphics.getWidth() / initialLayout.width / 1.1f);
+		com.badlogic.gdx.graphics.g2d.GlyphLayout finalLayout = new com.badlogic.gdx.graphics.g2d.GlyphLayout(font[i], string);
+		font_width[i] = (int) (finalLayout.width + margin);
+		font_height[i] = (int) font[i].getLineHeight() + margin;
+		float x_bounds = finalLayout.width / 2;
+		float y_bounds = font[i].getLineHeight() + ((font[i].getLineHeight() + margin) * (-i));
 																								// offset
 																								// by
 																								// number

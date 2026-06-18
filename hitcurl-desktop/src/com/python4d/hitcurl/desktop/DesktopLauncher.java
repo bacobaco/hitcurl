@@ -1,7 +1,7 @@
 package com.python4d.hitcurl.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.python4d.hitcurl.HitcurL;
@@ -19,13 +19,11 @@ public class DesktopLauncher {
 			TexturePacker.processIfModified(settings, "./images",
 					"../hitcurl-android/assets/images", "hitcurl.atlas");
 		}
-		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+		Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
 
-		cfg.title = "HitcurL";
+		cfg.setTitle("HitcurL");
+		cfg.setWindowedMode((int) Constants.VIEWPORT_WIDTH, (int) Constants.VIEWPORT_HEIGHT);
 
-		cfg.width = (int) Constants.VIEWPORT_WIDTH;
-		cfg.height = (int) Constants.VIEWPORT_HEIGHT;
-
-		new LwjglApplication(new HitcurL(new DesktopGoogleServices(), "alpha"), cfg);
+		new Lwjgl3Application(new HitcurL(new DesktopGoogleServices(), "alpha"), cfg);
 	}
 }

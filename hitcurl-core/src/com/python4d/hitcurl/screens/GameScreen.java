@@ -34,7 +34,7 @@ public class GameScreen extends AbstractScreen {
 		screenFactor = Gdx.graphics.getWidth() / Constants.VIEWPORT_WIDTH;
 		worldController = new WorldController(game, nbClue);
 		worldRenderer = new WorldRenderer(worldController);
-		Gdx.input.setCatchBackKey(true);
+		Gdx.input.setCatchKey(com.badlogic.gdx.Input.Keys.BACK, true);
 
 	}
 
@@ -63,7 +63,7 @@ public class GameScreen extends AbstractScreen {
 	public void pause() {
 		paused = true;
 		worldController.SaveGame();
-		Gdx.input.setCatchBackKey(false);
+		Gdx.input.setCatchKey(com.badlogic.gdx.Input.Keys.BACK, false);
 	}
 
 	@Override

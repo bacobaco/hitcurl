@@ -1,0 +1,15 @@
+*.iml
+.gradle
+.gradle_home
+/local.properties
+/.idea/
+.DS_Store
+/build
+/hitcurl-android/build
+/hitcurl-core/build
+/hitcurl-desktop/build
+/hitcurl-android/libs
+/captures
+.externalNativeBuild
+.cxx
+local.properties

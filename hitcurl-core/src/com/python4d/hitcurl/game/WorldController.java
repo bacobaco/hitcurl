@@ -185,10 +185,10 @@ public class WorldController extends InputAdapter implements Disposable {
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
-		Gdx.app.debug(TAG, "scrolled(int amount) #" + amount);
+	public boolean scrolled(float amountX, float amountY) {
+		Gdx.app.debug(TAG, "scrolled(float amountX, float amountY) #" + amountX + ", " + amountY);
 		stage.clear();
-		if (amount > 0)
+		if (amountY > 0)
 			NextLevel();
 		else
 			PreviousLevel();

@@ -1,0 +1,1 @@
+include 'hitcurl-core', 'hitcurl-desktop', 'hitcurl-android'
