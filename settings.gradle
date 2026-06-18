@@ -1,1 +1,1 @@
-include 'hitcurl-core', 'hitcurl-desktop', 'hitcurl-android'
+include 'hitcurl-core', 'hitcurl-android'
