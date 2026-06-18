@@ -107,6 +107,19 @@ public class Logo3D {
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 	}
 
+	public void resize(int width, int height) {
+		if (width <= 0 || height <= 0) return;
+		camera3D.viewportWidth = 100f;
+		camera3D.viewportHeight = 100f * (float)height / (float)width;
+		camera3D.update();
+		
+		vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
+		camera3D.unproject(vect3);
+		camera3D.position.set(0, 0, 1 / size);
+		camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
+		camera3D.update();
+	}
+
 	public void render(float deltaTime) {
 		// For some flavor, lets spin our camera around the Y axis by 1
 		// degree

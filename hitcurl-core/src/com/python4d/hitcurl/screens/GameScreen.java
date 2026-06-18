@@ -53,6 +53,9 @@ public class GameScreen extends AbstractScreen {
 	@Override
 	public void resize(int width, int height) {
 		worldRenderer.resize(width, height);
+		if (logo3d != null) {
+			logo3d.resize(width, height);
+		}
 	}
 
 	@Override
