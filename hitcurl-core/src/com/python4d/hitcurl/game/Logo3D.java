@@ -149,11 +149,14 @@ public class Logo3D {
 	}
 
 	public void updatePosition(float x, float y, float width, float height) {
+		if (width <= 0f) width = 480f;
+		if (height <= 0f) height = 800f;
 		this.posx = x;
 		this.posy = y;
 		
 		camera3D.viewportWidth = 100f;
 		camera3D.viewportHeight = 100f * height / width;
+		camera3D.update();
 		
 		vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
 		camera3D.unproject(vect3, 0, 0, width, height);
