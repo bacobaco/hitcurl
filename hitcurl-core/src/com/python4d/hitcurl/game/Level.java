@@ -257,10 +257,25 @@ public class Level {
 
 	}
 
+	public boolean isShowingSolution() {
+		return showSolution > System.currentTimeMillis();
+	}
+
 	public void StopMove(boolean b) {
 		for (Actor l : lettres)
 			l.setTouchable(Touchable.disabled);
 
+	}
+
+	public void fadeOutPuzzle(float duration) {
+		if (grille != null) {
+			grille.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut(duration));
+		}
+		for (CubesGroup l : lettres) {
+			if (l != null) {
+				l.addAction(com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut(duration));
+			}
+		}
 	}
 
 }

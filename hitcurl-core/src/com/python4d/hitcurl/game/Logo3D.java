@@ -40,9 +40,16 @@ public class Logo3D {
 	private float incy = 1.0f;
 
 	public Logo3D(String object, float x, float y, float size) {
+		this.posx = x;
+		this.posy = y;
 		this.size = size;
-		this.camera3D = new PerspectiveCamera(67f, 100f, 100f);
-		updatePosition(x, y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		this.camera3D = new PerspectiveCamera(67f, 100f, 100f * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
+		// Move the camera 3 units back along the z-axis and look at the
+		// origin
+		vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
+		camera3D.unproject(vect3);
+		camera3D.position.set(0, 0, 1 / size);
+		camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
 		// Near and Far (plane) repesent the minimum and maximum ranges of
 		// the
 		// camera in, um, units
@@ -88,7 +95,8 @@ public class Logo3D {
 		// 0));
 		instances.add(new ModelInstance(model, 0, 0, 0));
 		BoundingBox bbox = new BoundingBox();
-		instances.get(0).calculateBoundingBox(bbox);
+		if (instances.size > 3)
+			instances.get(3).calculateBoundingBox(bbox);
 		Gdx.app.debug(TAG, "Bound Model= " + bbox);
 		// Finally we want some light, or we wont see our color. The
 		// environment
@@ -112,7 +120,7 @@ public class Logo3D {
 			// UpdateCameraPosition();
 
 			vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
-			camera3D.unproject(vect3, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+			camera3D.unproject(vect3);
 			camera3D.position.set(0, 0, 1 / size);
 			camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
 		}
@@ -146,29 +154,5 @@ public class Logo3D {
 	public void setMoveOnScreen(boolean b) {
 		moveOnScreen = b;
 
-	}
-
-	public void updatePosition(float x, float y, float width, float height) {
-		if (width <= 0f) width = 480f;
-		if (height <= 0f) height = 800f;
-		this.posx = x;
-		this.posy = y;
-		
-		// Reset camera to default state so unproject works correctly in the same coordinate space
-		camera3D.position.set(0f, 0f, 0f);
-		camera3D.direction.set(0f, 0f, -1f);
-		camera3D.up.set(0f, 1f, 0f);
-		camera3D.near = 1.0f; // Force near to 1.0f for unproject!
-		camera3D.viewportWidth = 100f;
-		camera3D.viewportHeight = 100f * height / width;
-		camera3D.update();
-		
-		vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
-		camera3D.unproject(vect3, 0, 0, width, height);
-		
-		camera3D.position.set(0f, 0f, 1 / size);
-		camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
-		camera3D.near = 0.1f; // Restore near for rendering
-		camera3D.update();
 	}
 }

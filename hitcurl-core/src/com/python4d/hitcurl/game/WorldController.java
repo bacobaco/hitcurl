@@ -37,16 +37,15 @@ public class WorldController extends InputAdapter implements Disposable {
 	public int score = 1000 * ((Constants.DEBUG) ? 1 : 0);
 	public long endTime;
 	public float zoom = 1f;
-	private int niveau = 0;
+	public int niveau = 0;
 	private Skin skin;
 	private TextButton boutonLevelD, boutonLevelG, solution;
 	private Table levelTable;
-	private Label labelLevel;
+	private Label labelLevel, labelIndices;
 	public float screenFactor;
 	private TextActor scoretext;
 	private TextActor completetext;
 	private TextActor copyright;
-	private Table completeTable;
 	private Vector2 firstDown;
 
 	public static HashMap<Integer, String[]> levels;
@@ -62,7 +61,10 @@ public class WorldController extends InputAdapter implements Disposable {
 	public void init() {
 		stage = new Stage();
 		hud = new Stage();
-		screenFactor = stage.getWidth() / Constants.VIEWPORT_WIDTH;
+		
+		float ratioX = stage.getWidth() / Constants.VIEWPORT_WIDTH;
+		float ratioY = stage.getHeight() / Constants.VIEWPORT_HEIGHT;
+		screenFactor = Math.min(ratioX, ratioY);
 
 		level = new Level(stage, niveau, nbClue);
 		level.RestorePosition(niveau);
@@ -71,8 +73,6 @@ public class WorldController extends InputAdapter implements Disposable {
 		levelTable = new Table();
 
 		levelTable.setFillParent(true);
-		completeTable = new Table();
-		completeTable.setFillParent(true);
 		levelTable.bottom().center();
 		if (Constants.DEBUG)
 			levelTable.debugAll();
@@ -81,17 +81,20 @@ public class WorldController extends InputAdapter implements Disposable {
 		labelLevel = new Label("Level " + niveau, skin);
 		labelLevel.setColor(Color.YELLOW);
 		labelLevel.setFontScale(screenFactor * 1.5f);
+		labelIndices = new Label("Indice restant: 0", skin, "berlin");
+		labelIndices.setColor(Color.WHITE);
+		labelIndices.setFontScale(screenFactor * 0.6f);
 		solution = new TextButton("", skin, "solution");
 		boutonLevelD = new TextButton("", skin, "BoutonJauneDroit");
 		boutonLevelG = new TextButton("", skin, "BoutonJauneGauche");
 		scoretext = new TextActor(skin.getFont("sketchfont"), "Score " + score);
-		scoretext.setScale(screenFactor);
-		copyright = new TextActor(skin.getFont("berlin"), "(c) Python4d & PP");
-		copyright.setScale(0.5f * screenFactor);
+		scoretext.setScale(screenFactor * 1.5f);
+		copyright = new TextActor(skin.getFont("berlin"), HitcurL.appVersion + " - (c) Bacoland");
+		copyright.setScale(0.4f * screenFactor);
+		
 		completetext = new TextActor(skin.getFont("goodgirl"), "Level Completed !");
-		completetext.setScale(screenFactor);
-		completetext.addAction(forever(sequence(fadeOut(1), fadeIn(1))));
-		completeTable.add(completetext).center();
+		completetext.setScale(screenFactor * 1.2f);
+		completetext.addAction(forever(sequence(fadeOut(0.5f), fadeIn(0.5f))));
 		completetext.setVisible(false);
 
 		boutonLevelD.addListener(new ClickListener() {
@@ -112,25 +115,62 @@ public class WorldController extends InputAdapter implements Disposable {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Gdx.app.log("button solution", "clicked");
-				if (!level.isComplete && score > 0) {
+				if (!level.isComplete && score >= Constants.SOLUTION_COST && !level.isShowingSolution()) {
 					level.Solution(Constants.TIME_SOLUTION);
 					score -= Constants.SOLUTION_COST;
 					endTime = System.currentTimeMillis() + score * 1000;
 				}
 			};
 		});
-		levelTable.setTransform(true);
-		levelTable.add(boutonLevelG).size(boutonLevelG.getWidth() * screenFactor).expandX().center();
-		levelTable.add(labelLevel).expandX().center();
-		levelTable.add(boutonLevelD).size(boutonLevelD.getWidth() * screenFactor).expandX().center();
-		levelTable.row().expandX();
-		levelTable.add(scoretext).center().expandX().pad(10);
-		levelTable.add(solution).size(scoretext.getHeight() * 2 * screenFactor).expandX().center();
 
-		levelTable.add(copyright).right().bottom().pad(3);
-		levelTable.bottom().pack();
+		levelTable.setTransform(true);
+		levelTable.top(); // On aligne le contenu de la table vers le haut
+		
+		// Colonne de gauche avec le score et la règle dessous
+		Table scoreTable = new Table();
+		scoreTable.add(scoretext).center().row();
+		
+		Label labelRegle = new Label("1 indice coute 22 points", skin, "berlin");
+		labelRegle.setColor(Color.LIGHT_GRAY);
+		labelRegle.setFontScale(screenFactor * 0.52f);
+		scoreTable.add(labelRegle).center().padTop(3 * screenFactor);
+		
+		// Ligne 1 (HAUT) : Score à gauche, Ampoule (Hint) à droite
+		levelTable.add(scoreTable).expandX().left().top().padLeft(20 * screenFactor).padTop(10 * screenFactor);
+		
+		// Colonne de droite avec l'ampoule géante et le texte dessous
+		Table hintTable = new Table();
+		hintTable.add(solution).size(128 * screenFactor).center().row();
+		hintTable.add(labelIndices).center().padTop(5 * screenFactor);
+		
+		levelTable.add(hintTable).expandX().center().top().padTop(10 * screenFactor);
+		
+		// Espace flexible au milieu pour pousser le reste vers le bas
+		levelTable.row().expandY();
+		levelTable.add().colspan(2); 
+		
+		levelTable.row();
+		// Ligne 2 : Level Completed (clignotant juste au dessus des boutons)
+		levelTable.add(completetext).colspan(2).center().padBottom(10 * screenFactor);
+
+		levelTable.row();
+		
+		// Ligne 3 (BAS) : Navigation entre les niveaux
+		Table navTable = new Table();
+		navTable.add(boutonLevelG).size(boutonLevelG.getWidth() * screenFactor).expandX().right();
+		navTable.add(labelLevel).pad(0, 20 * screenFactor, 0, 20 * screenFactor);
+		navTable.add(boutonLevelD).size(boutonLevelD.getWidth() * screenFactor).expandX().left();
+		levelTable.add(navTable).colspan(2).center();
+		
+		levelTable.row();
+		
+		// Ligne 4 (BAS) : Copyright
+		levelTable.add(copyright).colspan(2).right().padRight(20 * screenFactor).padTop(10 * screenFactor);
+		
+		// Marge de sécurité globale en bas
+		levelTable.padBottom(40 * screenFactor);
+		
 		hud.addActor(levelTable);
-		hud.addActor(completeTable);
 
 		inputMultiplexer = new InputMultiplexer(stage, hud);
 		inputMultiplexer.addProcessor(1, this);
@@ -140,6 +180,52 @@ public class WorldController extends InputAdapter implements Disposable {
 		endTime = System.currentTimeMillis() + score * 1000;
 	}
 
+	private void showResetDialog() {
+		com.badlogic.gdx.scenes.scene2d.ui.Dialog dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("", skin) {
+			protected void result(Object object) {
+				if ((Boolean)object) {
+					resetAllData();
+				}
+			}
+		};
+		
+		Label label = new Label("Voulez-vous vraiment\nrecommencer le jeu ?", skin, "berlin");
+		label.setAlignment(com.badlogic.gdx.utils.Align.center);
+		dialog.getContentTable().add(label).pad(30 * screenFactor);
+		
+		TextButton btnYes = new TextButton("OUI", skin, "BoutonJauneDroit");
+		TextButton btnNo = new TextButton("NON", skin, "BoutonJauneGauche");
+		
+		dialog.button(btnYes, true);
+		dialog.button(btnNo, false);
+		
+		dialog.getButtonTable().getCell(btnYes).size(120 * screenFactor, 60 * screenFactor).pad(10 * screenFactor);
+		dialog.getButtonTable().getCell(btnNo).size(120 * screenFactor, 60 * screenFactor).pad(10 * screenFactor);
+		
+		dialog.show(hud);
+	}
+
+	private void resetAllData() {
+		Preferences prefs = Gdx.app.getPreferences("SCORE NBCLUE" + nbClue);
+		prefs.clear();
+		prefs.flush();
+		
+		Preferences prefsGrilles = Gdx.app.getPreferences("GRILLES" + nbClue);
+		prefsGrilles.clear();
+		prefsGrilles.flush();
+		
+		for (int i = 0; i < Constants.NB_NIVEAU; i++) {
+			Preferences prefsLevel = Gdx.app.getPreferences("LEVEL" + i + "NBCLUE" + nbClue);
+			prefsLevel.clear();
+			prefsLevel.flush();
+		}
+		
+		niveau = 0;
+		stage.clear();
+		hud.clear();
+		init();
+	}
+
 	// ==================================================UPDATE
 	public void update(float deltaTime, boolean paused) {
 		// Test les lettre dans la grille
@@ -147,9 +233,17 @@ public class WorldController extends InputAdapter implements Disposable {
 		if (level.isComplete && !completetext.isVisible()) {
 			completetext.setVisible(true);
 			level.StopMove(true);
+			level.fadeOutPuzzle(3f); // Disparition totale sur 10 secondes
 			if (level.iPaid == 0) {
 				level.iPaid = Constants.SCORE_PAID * (7 - nbClue) * (niveau + 1);
 				score += Constants.TIME_PAID;
+				// Sauvegarde locale du record
+				Preferences localPrefs = Gdx.app.getPreferences("local_highscores");
+				int currentHighScore = localPrefs.getInteger("highscore_" + nbClue, 0);
+				if (score > currentHighScore) {
+					localPrefs.putInteger("highscore_" + nbClue, score);
+					localPrefs.flush();
+				}
 				HitcurL.googleServices.submitScore(score, nbClue);
 			}
 			SaveGame();
@@ -160,7 +254,9 @@ public class WorldController extends InputAdapter implements Disposable {
 			endTime = System.currentTimeMillis() + score * 1000;
 		scoretext.setText("Score " + score);
 		labelLevel.setText("Level " + niveau);
-		solution.setVisible(!(score < 10));
+		int nbIndices = score / Constants.SOLUTION_COST;
+		labelIndices.setText("Indice restant: " + nbIndices);
+		solution.setVisible(score >= Constants.SOLUTION_COST && !level.isShowingSolution());
 	}
 
 	private void NextLevel() {

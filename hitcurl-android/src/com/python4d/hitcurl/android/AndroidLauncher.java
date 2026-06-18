@@ -126,6 +126,33 @@ public class AndroidLauncher extends AndroidApplication implements IActivityRequ
 
 	@Override
 	public void submitScore(long score, int nbclue) {
+		// Enregistrement du meilleur score en local
+		try {
+			android.content.SharedPreferences localPrefs = getSharedPreferences("local_highscores", android.content.Context.MODE_PRIVATE);
+			int currentHighScore = localPrefs.getInt("highscore_" + nbclue, 0);
+			if (score > currentHighScore) {
+				localPrefs.edit().putInt("highscore_" + nbclue, (int) score).apply();
+			}
+		} catch (Exception e) {
+			Gdx.app.log("AndroidLauncher", "Erreur enregistrement score local : " + e.getMessage());
+		}
+
+		// Envoi au classement en ligne Google Play Games
+		String leaderboardId = null;
+		if (nbclue == Constants.EASY) {
+			leaderboardId = getString(R.string.leaderboard_highscoreeasy);
+		} else if (nbclue == Constants.NORMAL) {
+			leaderboardId = getString(R.string.leaderboard_highscorenormal);
+		} else if (nbclue == Constants.EXPERT) {
+			leaderboardId = getString(R.string.leaderboard_highscoreexpert);
+		}
+
+		if (leaderboardId != null && mIsSignedIn) {
+			PlayGames.getLeaderboardsClient(this).submitScore(leaderboardId, score);
+		}
+	}
+
+	private void openGoogleLeaderboard(int nbclue) {
 		String leaderboardId = null;
 		if (nbclue == Constants.EASY) {
 			leaderboardId = getString(R.string.leaderboard_highscoreeasy);
@@ -136,26 +163,56 @@ public class AndroidLauncher extends AndroidApplication implements IActivityRequ
 		}
 
 		if (leaderboardId != null) {
-			PlayGames.getLeaderboardsClient(this).submitScore(leaderboardId, score);
+			try {
+				PlayGames.getLeaderboardsClient(this)
+					.getLeaderboardIntent(leaderboardId)
+					.addOnSuccessListener(intent -> startActivityForResult(intent, REQUEST_CODE_UNUSED));
+			} catch (Exception e) {
+				Gdx.app.log("AndroidLauncher", "Impossible d'ouvrir le classement Google Play : " + e.getMessage());
+			}
 		}
 	}
 
 	@Override
 	public void showScores(int nbclue) {
-		String leaderboardId = null;
+		String difficultyName = "";
 		if (nbclue == Constants.EASY) {
-			leaderboardId = getString(R.string.leaderboard_highscoreeasy);
+			difficultyName = "Facile";
 		} else if (nbclue == Constants.NORMAL) {
-			leaderboardId = getString(R.string.leaderboard_highscorenormal);
+			difficultyName = "Normal";
 		} else if (nbclue == Constants.EXPERT) {
-			leaderboardId = getString(R.string.leaderboard_highscoreexpert);
+			difficultyName = "Expert";
 		}
 
-		if (leaderboardId != null) {
-			PlayGames.getLeaderboardsClient(this)
-				.getLeaderboardIntent(leaderboardId)
-				.addOnSuccessListener(intent -> startActivityForResult(intent, REQUEST_CODE_UNUSED));
-		}
+		final String diff = difficultyName;
+
+		// Lecture du meilleur score local
+		android.content.SharedPreferences localPrefs = getSharedPreferences("local_highscores", android.content.Context.MODE_PRIVATE);
+		final int localHighScore = localPrefs.getInt("highscore_" + nbclue, 0);
+
+		runOnUiThread(() -> {
+			try {
+				android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AndroidLauncher.this);
+				builder.setTitle("Meilleur Score Local - Mode " + diff);
+				builder.setMessage("Votre record local sur cet appareil est de : " + localHighScore + " points.");
+				builder.setPositiveButton("OK", (dialog, id) -> dialog.dismiss());
+
+				if (mIsSignedIn) {
+					builder.setNeutralButton("Classement en ligne", (dialog, id) -> {
+						dialog.dismiss();
+						openGoogleLeaderboard(nbclue);
+					});
+				} else {
+					builder.setNeutralButton("Connexion Play Jeux", (dialog, id) -> {
+						dialog.dismiss();
+						signIn();
+					});
+				}
+				builder.create().show();
+			} catch (Exception e) {
+				Gdx.app.log("AndroidLauncher", "Erreur affichage boite de dialogue score : " + e.getMessage());
+			}
+		});
 	}
 
 	@Override

@@ -51,7 +51,7 @@ public class Constants {
 	protected static final float AD_BANNER_HEIGHT = 50.0f;
 	protected static final int TIME_SOLUTION = 3;
 	public static final int SCORE_PAID = 10;
-	public static final int TIME_PAID = 60;
+	public static final int TIME_PAID = 100;
 	protected static final int SOLUTION_COST = 22;
 
 	// Implementing Fisher–Yates shuffle
