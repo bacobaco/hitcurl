@@ -154,14 +154,21 @@ public class Logo3D {
 		this.posx = x;
 		this.posy = y;
 		
+		// Reset camera to default state so unproject works correctly in the same coordinate space
+		camera3D.position.set(0f, 0f, 0f);
+		camera3D.direction.set(0f, 0f, -1f);
+		camera3D.up.set(0f, 1f, 0f);
+		camera3D.near = 1.0f; // Force near to 1.0f for unproject!
 		camera3D.viewportWidth = 100f;
 		camera3D.viewportHeight = 100f * height / width;
 		camera3D.update();
 		
 		vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
 		camera3D.unproject(vect3, 0, 0, width, height);
-		camera3D.position.set(0, 0, 1 / size);
+		
+		camera3D.position.set(0f, 0f, 1 / size);
 		camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
+		camera3D.near = 0.1f; // Restore near for rendering
 		camera3D.update();
 	}
 }
