@@ -107,8 +107,10 @@ public class Logo3D {
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 	}
 
-	public void resize(int width, int height) {
+	public void resize(int width, int height, float x, float y) {
 		if (width <= 0 || height <= 0) return;
+		this.posx = x;
+		this.posy = y;
 		camera3D.viewportWidth = 100f;
 		camera3D.viewportHeight = 100f * (float)height / (float)width;
 		camera3D.update();

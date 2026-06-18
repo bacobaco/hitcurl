@@ -54,7 +54,7 @@ public class GameScreen extends AbstractScreen {
 	public void resize(int width, int height) {
 		worldRenderer.resize(width, height);
 		if (logo3d != null) {
-			logo3d.resize(width, height);
+			logo3d.resize(width, height, width / 2f - 75f, -height / 2f + 25f);
 		}
 	}
 
