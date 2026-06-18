@@ -23,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.python4d.hitcurl.HitcurL;
 import com.python4d.hitcurl.screens.SplashScreen;
 
@@ -61,9 +60,9 @@ public class WorldController extends InputAdapter implements Disposable {
 
 	// ==================================================INIT
 	public void init() {
-		stage = new Stage(new ExtendViewport(Constants.SIZE_CUBE * 12f, Constants.SIZE_CUBE * 16f));
-		hud = new Stage(new ExtendViewport(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT));
-		screenFactor = 1.0f;
+		stage = new Stage();
+		hud = new Stage();
+		screenFactor = stage.getWidth() / Constants.VIEWPORT_WIDTH;
 
 		level = new Level(stage, niveau, nbClue);
 		level.RestorePosition(niveau);

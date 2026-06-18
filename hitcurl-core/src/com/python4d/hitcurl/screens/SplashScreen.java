@@ -19,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -238,8 +237,8 @@ public class SplashScreen extends AbstractScreen {
 	@Override
 	public void resize(int width, int height) {
 		screen.getViewport().update(width, height, true);
-		stage.getViewport().update(width, height, true);
-		if (logo3d != null) logo3d.resize(width, height, width / 2f - 100f, height / 2f - 100f);
+		stage.getViewport().update(width, (int) ((float) width / (float) FirstWidth * (float) height));
+		((OrthographicCamera) stage.getCamera()).zoom = 1 / (stage.getWidth() / (25 * Constants.SIZE_CUBE));
 		Gdx.app.debug(TAG, "Screen Width & Height # " + stage.getViewport().getScreenWidth() + " & " + stage.getViewport().getScreenHeight());
 		Gdx.app.debug(TAG, "World Width & Height # " + stage.getViewport().getWorldWidth() + " & " + stage.getViewport().getWorldHeight());
 
@@ -247,8 +246,8 @@ public class SplashScreen extends AbstractScreen {
 
 	@Override
 	public void show() {
-		stage = new Stage(new ExtendViewport(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT));
-		screen = new Stage(new ExtendViewport(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT));
+		stage = new Stage();
+		screen = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		Gdx.input.setCatchKey(com.badlogic.gdx.Input.Keys.BACK, true);
 		FirstWidth = Gdx.graphics.getWidth();

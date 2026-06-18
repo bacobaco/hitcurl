@@ -39,7 +39,9 @@ public class WorldRenderer implements Disposable {
 
 	// ======================================================RESIZE
 	public void resize(int width, int height) {
-		worldController.stage.getViewport().update(width, height, true);
+		// resize the stage
+		worldController.stage.getViewport().update(width, height, false);
+		((OrthographicCamera) worldController.stage.getCamera()).zoom = 1 / (worldController.stage.getWidth() / (Constants.SIZE_CUBE * 12f));
 		worldController.hud.getViewport().update(width, height, true);
 
 		Gdx.app.debug(TAG,
