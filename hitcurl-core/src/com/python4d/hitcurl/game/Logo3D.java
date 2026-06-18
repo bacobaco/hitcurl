@@ -40,16 +40,9 @@ public class Logo3D {
 	private float incy = 1.0f;
 
 	public Logo3D(String object, float x, float y, float size) {
-		this.posx = x;
-		this.posy = y;
 		this.size = size;
-		this.camera3D = new PerspectiveCamera(67f, 100f, 100f * Gdx.graphics.getHeight() / Gdx.graphics.getWidth());
-		// Move the camera 3 units back along the z-axis and look at the
-		// origin
-		vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
-		camera3D.unproject(vect3, 0, 0, 480f, 800f);
-		camera3D.position.set(0, 0, 1 / size);
-		camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
+		this.camera3D = new PerspectiveCamera(67f, 100f, 100f);
+		updatePosition(x, y, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		// Near and Far (plane) repesent the minimum and maximum ranges of
 		// the
 		// camera in, um, units
@@ -119,7 +112,7 @@ public class Logo3D {
 			// UpdateCameraPosition();
 
 			vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
-			camera3D.unproject(vect3, 0, 0, 480f, 800f);
+			camera3D.unproject(vect3, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 			camera3D.position.set(0, 0, 1 / size);
 			camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
 		}
@@ -153,5 +146,19 @@ public class Logo3D {
 	public void setMoveOnScreen(boolean b) {
 		moveOnScreen = b;
 
+	}
+
+	public void updatePosition(float x, float y, float width, float height) {
+		this.posx = x;
+		this.posy = y;
+		
+		camera3D.viewportWidth = 100f;
+		camera3D.viewportHeight = 100f * height / width;
+		
+		vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
+		camera3D.unproject(vect3, 0, 0, width, height);
+		camera3D.position.set(0, 0, 1 / size);
+		camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
+		camera3D.update();
 	}
 }

@@ -18,7 +18,7 @@ public class GameScreen extends AbstractScreen {
 
 	public GameScreen(HitcurL game, int nbClue) {
 		super(game);
-		logo3d = new Logo3D("3d/logo.obj", 165f, -375f, 0.01f);
+		logo3d = new Logo3D("3d/logo.obj", Gdx.graphics.getWidth() / 2 - 75f, -Gdx.graphics.getHeight() / 2 + 25f, 0.01f);
 		this.nbClue = nbClue;
 	}
 
@@ -54,6 +54,7 @@ public class GameScreen extends AbstractScreen {
 	@Override
 	public void resize(int width, int height) {
 		worldRenderer.resize(width, height);
+		logo3d.updatePosition(width / 2f - 75f, -height / 2f + 25f, (float) width, (float) height);
 	}
 
 	@Override

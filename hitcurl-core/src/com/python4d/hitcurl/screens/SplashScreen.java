@@ -57,7 +57,7 @@ public class SplashScreen extends AbstractScreen {
 
 	public SplashScreen(HitcurL game) {
 		super(game);
-		logo3d = new Logo3D("3d/logo.obj", 140f, 300f, 0.01f);
+		logo3d = new Logo3D("3d/logo.obj", Gdx.graphics.getWidth() / 2 - 100f, Gdx.graphics.getHeight() / 2 - 100f, 0.01f);
 		logo3d.setMoveOnScreen(false);
 	}
 
@@ -216,7 +216,7 @@ public class SplashScreen extends AbstractScreen {
 	public void render(float deltaTime) {
 
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		// 3D render
 
 		if (!reset.update()) {
@@ -231,6 +231,7 @@ public class SplashScreen extends AbstractScreen {
 		screen.act(deltaTime);
 		screen.draw();
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 		logo3d.render(deltaTime);
 
 	}
@@ -240,6 +241,7 @@ public class SplashScreen extends AbstractScreen {
 		screen.getViewport().update(width, height, true);
 		stage.getViewport().update(width, (int) ((float) width / (float) FirstWidth * (float) height));
 		((OrthographicCamera) stage.getCamera()).zoom = 1 / (stage.getWidth() / (25 * Constants.SIZE_CUBE));
+		logo3d.updatePosition(width / 2f - 100f, height / 2f - 100f, (float) width, (float) height);
 		Gdx.app.debug(TAG, "Screen Width & Height # " + stage.getViewport().getScreenWidth() + " & " + stage.getViewport().getScreenHeight());
 		Gdx.app.debug(TAG, "World Width & Height # " + stage.getViewport().getWorldWidth() + " & " + stage.getViewport().getWorldHeight());
 
