@@ -47,7 +47,7 @@ public class Logo3D {
 		// Move the camera 3 units back along the z-axis and look at the
 		// origin
 		vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
-		camera3D.unproject(vect3);
+		camera3D.unproject(vect3, 0, 0, 480f, 800f);
 		camera3D.position.set(0, 0, 1 / size);
 		camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
 		// Near and Far (plane) repesent the minimum and maximum ranges of
@@ -119,7 +119,7 @@ public class Logo3D {
 			// UpdateCameraPosition();
 
 			vect3 = new Vector3(-posx * 1 / size, -posy * 1 / size, 0f);
-			camera3D.unproject(vect3);
+			camera3D.unproject(vect3, 0, 0, 480f, 800f);
 			camera3D.position.set(0, 0, 1 / size);
 			camera3D.lookAt(new Vector3(0f, 0f, 0f).add(vect3));
 		}

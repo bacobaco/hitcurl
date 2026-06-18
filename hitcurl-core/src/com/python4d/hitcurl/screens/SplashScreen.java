@@ -57,7 +57,7 @@ public class SplashScreen extends AbstractScreen {
 
 	public SplashScreen(HitcurL game) {
 		super(game);
-		logo3d = new Logo3D("3d/logo.obj", Gdx.graphics.getWidth() / 2 - 100f, Gdx.graphics.getHeight() / 2 - 100f, 0.01f);
+		logo3d = new Logo3D("3d/logo.obj", 140f, 300f, 0.01f);
 		logo3d.setMoveOnScreen(false);
 	}
 
